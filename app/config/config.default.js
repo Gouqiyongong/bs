@@ -32,8 +32,12 @@ module.exports = appInfo => {
       // 关闭csrf防范，**NOTICE** 有一定安全风险
       csrf: {
         enable: false,
-      },
+      }
     },
+    mongoose: {
+      url: 'mongodb://127.0.0.1:27017/bs',
+      option: {}
+    }
   };
 
   return {
