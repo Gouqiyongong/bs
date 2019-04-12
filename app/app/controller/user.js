@@ -5,10 +5,13 @@ const Controller = require('egg').Controller;
 class User extends Controller {
   async userLogin() {
     const { ctx } = this;
-    const { body: { username, password } = {} } = ctx.request;
+    let body = ctx.request.body;
+    const { username, password } = body;
+    console.log('22222222222222222222222222222222222222222222')
+    console.log(body)
     if(!username || !password) {
       ctx.body = {
-        status: 1,
+        status: 0,
         des: '用户名和密码不能为空'
       }
       return;

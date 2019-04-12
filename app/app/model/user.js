@@ -4,7 +4,8 @@ module.exports = app => {
  
   const UserSchema = new Schema({
     username: { type: String },
-    password: { type: String }
+    password: { type: String },
+    power: { type: String }
   });
   // 以上定义了表数据的类型
  

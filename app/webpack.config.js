@@ -1,8 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const vuxLoader = require('vux-loader');
 
-module.exports = {
+const webpackConfig = {
   entry: {
     app: path.join(__dirname, './client/index.js'),      // spa，只有一个入口，只需设置一个 entry 就行
     vendor: ['vue', 'vue-router', 'axios', 'element-ui', 'moment'],
@@ -92,3 +93,7 @@ module.exports = {
     fs: 'empty',
   },
 };
+
+module.exports = vuxLoader.merge(webpackConfig, {
+  plugins: ['vux-ui']
+})

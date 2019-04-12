@@ -10,5 +10,5 @@ module.exports = app => {
   router.get('/api/list', controller.user.userList);
 
   router.post('/api/login', controller.user.userLogin);
-  router.redirect('*', '/login');
+  router.redirect('/*', '/login');
 };

@@ -2,9 +2,6 @@ const jwt = require('jsonwebtoken');
 module.exports = (options, app) => {
   return async function loginjwt(ctx, next) {
     let token = ctx.cookies.get('token', {signed: false});
-    console.log('...........................')
-    console.log(token)
-    console.log('...........................')
     let result;
     if(token) {
       try {
@@ -16,7 +13,6 @@ module.exports = (options, app) => {
           return;
         }
       } catch(e) {
-        console.log(e);
         ctx.redirect('/login');
         return;
       }
@@ -25,9 +21,12 @@ module.exports = (options, app) => {
         const { username } = result;
         const redisToken = await app.redis.get(username);
         if(token === redisToken) {
-          ctx.username = username;
-          await next();
-          return
+          let userinfo =  await ctx.model.User.findOne({ username });
+          if(userinfo) {
+            ctx.userinfo = userinfo;
+            await next();
+            return
+          }
         }
       }
     }
