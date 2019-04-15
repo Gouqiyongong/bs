@@ -7,10 +7,20 @@ module.exports = app => {
     time: { type: Date },
     order: [
       {
+        /*
+          教室该节课状态：
+          0： 有课,
+          1： 已经预定，
+          2： 空置，学生可预订
+          3： 空置，教师可预订
+        */
+        state: { type: Number },
+        // 预订
         order: {
           username: String,
           time: Date
         },
+        // 签到
         sign: {
           time: Date
         }

@@ -9,6 +9,7 @@ module.exports = app => {
     floor: { type: String },
     roomnumber: { type: String },
     size: { type: Number },
+    sign: { type: Array },
     manager: { type: Array }
   })
 

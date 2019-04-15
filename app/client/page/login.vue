@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="fix content">
     <flexbox
       orient="vertical"
       :gutter="20"
@@ -81,15 +81,13 @@ export default {
 
 <style scoped>
   .content {
-    position: absolute;
-    height: 100%;
-    width: 100%;
+    padding-top: 50%;
     background-color: #f8f8f8;
   }
 
-  .vux-flexbox {
+  /* .vux-flexbox {
     margin-top: 50%;
-  }
+  } */
 
   .vux-flexbox-item {
     background-color: #fff;

@@ -24,6 +24,21 @@ export default {
   fieldset, img { border:0; } 
   button, input, select, textarea { font-size:100%; } 
   table { border-collapse:collapse; border-spacing:0; }
+  @font-face {
+    font-family: 'iconfont';  /* project id 1142998 */
+    src: url('//at.alicdn.com/t/font_1142998_lihepybmmr.eot');
+    src: url('//at.alicdn.com/t/font_1142998_lihepybmmr.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_1142998_lihepybmmr.woff2') format('woff2'),
+    url('//at.alicdn.com/t/font_1142998_lihepybmmr.woff') format('woff'),
+    url('//at.alicdn.com/t/font_1142998_lihepybmmr.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_1142998_lihepybmmr.svg#iconfont') format('svg');
+  }
+  .iconfont{
+    font-family:"iconfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;}
   html {
     width: 100%;
     height: 100%;
@@ -32,5 +47,10 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+  }
+  .fix {
+    position: relative;
+    height: 100%;
+    width: 100%;
   }
 </style>

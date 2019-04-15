@@ -1,5 +1,5 @@
 import axios from 'axios';
-import qs from 'querystring';
+import { querystring } from 'vux'
 
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL ='';
@@ -9,7 +9,7 @@ axios.defaults.baseURL ='';
 axios.interceptors.request.use(
   config => {
     // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
-    config.data = qs.stringify(config.data);
+    config.data = querystring.stringify(config.data);
     config.headers = {
       'Content-Type':'application/x-www-form-urlencoded'
     }
