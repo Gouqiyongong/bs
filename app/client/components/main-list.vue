@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import { PopupPicker, Group, Datetime, dateFormat } from "vux";
+import { PopupPicker, Group, Datetime, dateFormat, querystring } from "vux";
 import { appendFile } from 'fs';
 
 export default {
@@ -49,30 +49,36 @@ export default {
     Datetime,
     Group
   },
-  created() {
+  async created() {
     this.time = dateFormat(new Date(), "YYYY-MM-DD");
-    let arr = new Array(50);
-    let cc = new Array(50);
-    for (let i = 0; i < 50; i++) {
-      let a = new Array(50)
-      a.fill(1);
-      arr[i] = a;
+
+    try {
+      let floorList = await this.$axios.get('/api/room/category')
+      this.$set(this, 'floorList', floorList);
+    } catch(err) {
+      this.$vux.toast.show({
+        text: err,
+        type: 'warn'
+      })
     }
-      console.log(arr)
 
-    arr[1][1] = {
-      state: 0
+    let query = {
+      place: this.floor[0],
+      floor: this.floor[1].slice(0, -1),
+      time: this.time
     };
-    arr[5][5] = {
-      state: 1
-    };
+    this.$axios.get(`/api/room/roomList?${querystring.stringify(query)}`)
+      .then(data => {
+        this.$set(this, 'roomList', data);
+      })
+      .catch(err => {
+        this.$vux.toast.show({
+          text: err,
+          type: 'warn'
+        })
+      }) 
 
-    arr[49][49] = {
-      state: 2
-    };
-
-    this.$set(this, 'roomList', arr);
-    console.log(this.roomList)
+    // this.$set(this, 'roomList', arr);
   },
   methods: {
     timeChage() {
@@ -82,7 +88,7 @@ export default {
   },
   data() {
     return {
-      floor: ["明理楼", "2楼"],
+      floor: ["明理楼", "1楼"],
       time: "",
       roomList: [],
       floorList: [

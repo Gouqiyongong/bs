@@ -9,6 +9,7 @@ module.exports = app => {
     floor: { type: String },
     roomnumber: { type: String },
     size: { type: Number },
+    // 教室位置  一个数组  表示坐标
     sign: { type: Array },
     manager: { type: Array }
   })

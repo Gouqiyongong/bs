@@ -3,7 +3,7 @@ module.exports = app => {
   const { Schema } = mongoose;
 
   const OrderSchema = new Schema({
-    id: { type: String },
+    room_id: { type: String },
     time: { type: Date },
     order: [
       {
@@ -22,6 +22,7 @@ module.exports = app => {
         },
         // 签到
         sign: {
+          username: String,
           time: Date
         }
       }
