@@ -27,6 +27,12 @@ export default {
   components: {
     Tabbar,
     TabbarItem
+  },
+  created() {
+    this.$axios.get('/api/getUserInfo')
+      .then(data => {
+        this.$root.userInfo = data;
+      })
   }
 }
 </script>

@@ -30,24 +30,35 @@
             v-for="(value, key) in roomList"
             :key="key">
             <div
+              @click="val && clickRoom(val)"
+              :style="{backgroundColor: val ? 'blue' : ''}"
               class="list-r"
               v-for="(val, k) in value"
               :key="k">
-              </div>
+              <span>{{val && val.size}}</span>
+            </div>
           </div>
         </div>
       </div>
+      <x-dialog
+        hide-on-blur="true"
+        v-model="showDialog">
+        <div class="d-content">
+          sada
+        </div>
+      </x-dialog>
   </div>
 </template>
 <script>
-import { PopupPicker, Group, Datetime, dateFormat, querystring } from "vux";
+import { PopupPicker, Group, XDialog, Datetime, dateFormat, querystring } from "vux";
 import { appendFile } from 'fs';
 
 export default {
   components: {
     PopupPicker,
     Datetime,
-    Group
+    Group,
+    XDialog
   },
   async created() {
     this.time = dateFormat(new Date(), "YYYY-MM-DD");
@@ -61,11 +72,21 @@ export default {
         type: 'warn'
       })
     }
-
-    let query = {
+    this.queryList();
+  },
+  methods: {
+    clickRoom(value) {
+      this.roomInfo = value;
+      this.showDialog = true;
+    },
+    timeChage() {
+      this.queryList();
+    },
+    queryList() {
+      let query = {
       place: this.floor[0],
       floor: this.floor[1].slice(0, -1),
-      time: this.time
+      time: this.time.replace('-', '/')
     };
     this.$axios.get(`/api/room/roomList?${querystring.stringify(query)}`)
       .then(data => {
@@ -77,17 +98,12 @@ export default {
           type: 'warn'
         })
       }) 
-
-    // this.$set(this, 'roomList', arr);
-  },
-  methods: {
-    timeChage() {
-      console.log(this.floor);
-      console.log(this.time);
     }
   },
   data() {
     return {
+      roomInfo: {},
+      showDialog: true,
       floor: ["明理楼", "1楼"],
       time: "",
       roomList: [],
@@ -169,9 +185,22 @@ export default {
 .list-r {
   display: inline-block;
   margin: 0.2em;
-  width: 0.5em;
-  height: 0.5em;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  line-height: 80%;
+  vertical-align: middle;
   background-color: green;
+}
+
+.list-r>span {
+  font-size: .3rem;
+}
+
+.d-content {
+  width: 80%;
+  height: 10rem;
+  background-color: #fff;
 }
 </style>
 

@@ -50,15 +50,24 @@ class RoomService extends Service {
       let maxX = room[0] && room[0].sign[0] || 0,
           maxY = room[0] && room[0].sign[1] || 0;
       room.forEach(item => {
-        maxX = maxX < item.sign[0] ? maxX : item.sign[0];
-        maxY = maxY < item.sign[1] ? maxY : item.sign[1];
+        maxX = maxX > item.sign[0] ? maxX : item.sign[0];
+        maxY = maxY > item.sign[1] ? maxY : item.sign[1];
       });
       let data = new Array(maxX + 5);
-          data.fill(new Array(maxY + 5));
+      for(let i = 0; i < maxX + 5; i++) {
+        let a = [];
+        a.length = maxY + 5;
+        data[i] = a;
+      }
+      
       for(let i = 0; i < room.length; i++) {
-        const { sign, id } = room[i];
-        let a = await ctx.model.Order.findOne({ room_id: id, time: new Date(time) });
-        data[sign[0]][sign[1]] = a;
+        const { sign, id, size } = room[i];
+        let d = {
+          size,
+          data: await ctx.model.Order.findOne({ room_id: id, time: new Date(time) })
+        };
+        let [x, y] = sign;
+        data[x][y] = d;
       }
       return {
         status: 1,

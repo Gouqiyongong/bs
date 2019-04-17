@@ -7,8 +7,6 @@ class User extends Controller {
     const { ctx } = this;
     let body = ctx.request.body;
     const { username, password } = body;
-    console.log('22222222222222222222222222222222222222222222')
-    console.log(body)
     if(!username || !password) {
       ctx.body = {
         status: 0,
@@ -18,6 +16,19 @@ class User extends Controller {
     }
     ctx.body = await ctx.service.user.login();
   }
+
+  async getUserInfo() {
+    const { ctx } = this;
+    if(ctx.userinfo) {
+      ctx.body = {
+        username: ctx.userinfo.username,
+        power: ctx.userinfo.power
+      };
+      return;
+    }
+    ctx.redirect('/login')
+  }
+
   async add() {
     const { ctx } = this;
     ctx.body = await ctx.service.user.add();

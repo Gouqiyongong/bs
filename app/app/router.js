@@ -11,6 +11,7 @@ module.exports = app => {
   router.get('/api/list', controller.user.userList);
 
   router.post('/api/login', controller.user.userLogin);
+  router.get('/api/getUserInfo', controller.user.getUserInfo);
 
   router.get('/api/room/category', controller.room.category);
   router.get('/api/room/roomList', controller.room.roomList);
