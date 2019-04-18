@@ -6,9 +6,9 @@
         <i slot="icon" class="iconfont">&#xe63d;</i>
         <span slot="label">主页</span>
       </tabbar-item>
-      <tabbar-item link="/login">
+      <tabbar-item link="/main/order">
         <i slot="icon" class="iconfont">&#xe63d;</i>
-        <span slot="label">主页</span>
+        <span slot="label">订单</span>
       </tabbar-item>
       <tabbar-item>
         <i slot="icon" class="iconfont">&#xe63d;</i>
@@ -37,7 +37,9 @@ export default {
 }
 </script>
 <style scoped>
-
+  .weui-tabbar {
+    position: fixed;
+  }
 </style>
 
 

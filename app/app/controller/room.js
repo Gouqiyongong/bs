@@ -14,6 +14,18 @@ class RoomController extends Controller {
     const data = await ctx.service.room.roomList();
     ctx.body = data;
   }
+
+  async roomPower() {
+    const { ctx } = this;
+    const data = await ctx.service.room.roomPower();
+    ctx.body = data;
+  }
+
+  async order() {
+    const { ctx } = this;
+    const data = await ctx.service.room.order();
+    ctx.body = data;
+  }
 }
 
 module.exports = RoomController;

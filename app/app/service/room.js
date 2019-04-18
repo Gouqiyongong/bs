@@ -80,5 +80,106 @@ class RoomService extends Service {
       }
     }
   }
+  async roomPower() {
+    const { ctx } = this;
+    const { query } = ctx;
+    if(!query.room_id) {
+      return {
+        status: 0,
+        des: '查询参数错误'
+      }
+    }
+    const { userinfo: { username } } = ctx;
+    try {
+      const d = await ctx.model.Room.findOne({ id: query.room_id, manager: { $elemMatch:{$eq: username} } })
+      if(d) {
+        return {
+          status: 1
+        }
+      }
+    } catch(err) {
+      return {
+        status: 0,
+        des: err
+      }
+    }
+    return {
+      status: 0,
+      des: '没有权限'
+    }
+  }
+  async order() {
+    const { ctx } = this;
+    const { room_id, time, des, value } = ctx.request.body;
+    const errObj = {
+      status: 1,
+      des: '请求参数错误'
+    }
+    if(!room_id || !time || !des || !value) {
+      return errObj
+    }
+    const { username, power, manager } = ctx.userinfo;
+
+    try {
+      const order = await ctx.model.Order.findOne({
+        room_id,
+        time
+      });
+      if(!order) {
+        return errObj
+      }
+      const { state } = order.order[value];
+      console.log('')
+      if(state === 0) {
+        return {
+          status: 0,
+          des: '不可预订'
+        }
+      }
+      if(state !== 2 && power === 3) {
+        return {
+          status: 0,
+          des: '权限不足'
+        }
+      } 
+      if(state === 1 && power === 2) {
+        const d = await ctx.model.Room.findOne({ id: room_id, manager: { $elemMatch:{$eq: username} } })
+        if(!d) {
+          return {
+            status: 0,
+            des: '权限不足'
+          }
+        }
+      }
+      let oneOrder = order.order[value];
+      if(state === 1) {
+        if(oneOrder.oldOrder && oneOrder.oldOrder.indexOf(username) > -1) {
+          oneOrder.oldOrder = oneOrder.oldOrder ? oneOrder.oldOrder.push(oneOrder.order.username) : [].push(oneOrder.order.username);
+        }
+      }
+      oneOrder.state = 1;
+      oneOrder.order = {
+        username,
+        time: new Date(),
+        des
+      }
+      await ctx.model.Order.updateOne(
+        {
+          room_id,
+          time
+        },
+        order
+      )
+      return {
+        status: 1
+      }
+    } catch (err) {
+      return {
+        status: 0,
+        des: err
+      }
+    }
+    
+  }
 }
 module.exports = RoomService;

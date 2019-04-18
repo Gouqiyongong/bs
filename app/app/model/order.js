@@ -15,13 +15,23 @@ module.exports = app => {
           3： 空置，教师可预订
         */
         state: { type: Number },
+        // 被取消预订
+        oldOrder: { type: Array },
         // 预订
         order: {
           username: String,
-          time: Date
+          time: Date,
+          des: String
         },
         // 签到
         sign: {
+          /*
+            签到状态：
+              1：已经签到
+              2：签到过期
+              不存在：未签到
+          */
+          state: Number,
           username: String,
           time: Date
         }

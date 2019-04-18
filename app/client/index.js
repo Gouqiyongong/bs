@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import axios from './comme/axios';
-import  { ToastPlugin } from 'vux'
+import  { ToastPlugin, ConfirmPlugin } from 'vux'
 
 import routes from './router.js';
 
@@ -13,6 +13,7 @@ Vue.prototype.$fetch = axios;
 
 Vue.use(VueRouter);
 Vue.use(ToastPlugin)
+Vue.use(ConfirmPlugin)
 
 const router = new VueRouter({
   routes,

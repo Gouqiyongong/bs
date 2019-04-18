@@ -21,8 +21,11 @@ class User extends Controller {
     const { ctx } = this;
     if(ctx.userinfo) {
       ctx.body = {
-        username: ctx.userinfo.username,
-        power: ctx.userinfo.power
+        status: 1,
+        data: {
+          username: ctx.userinfo.username,
+          power: ctx.userinfo.power
+        }
       };
       return;
     }

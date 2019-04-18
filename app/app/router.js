@@ -12,9 +12,14 @@ module.exports = app => {
 
   router.post('/api/login', controller.user.userLogin);
   router.get('/api/getUserInfo', controller.user.getUserInfo);
-
+  
   router.get('/api/room/category', controller.room.category);
   router.get('/api/room/roomList', controller.room.roomList);
+  router.get('/api/room/roomPower', controller.room.roomPower);
+  router.post('/api/room/order', controller.room.order);
+
+  router.get('/api/order/list', controller.order.list);
+  router.post('/api/order/failOrder', controller.order.failOrder);
 
   router.get('*', controller.home.index);
 };

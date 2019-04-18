@@ -10,7 +10,11 @@ export default [
       {
         path: '',
         component: resolve => require(['./components/main-list.vue'], resolve),
-      }
+      },
+      {
+        path: 'order',
+        component: resolve => require(['./page/order.vue'], resolve),
+      },
     ]
   },
   {
