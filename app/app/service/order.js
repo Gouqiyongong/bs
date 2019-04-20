@@ -67,9 +67,6 @@ class OrderService extends Service {
       const order = await ctx.model.Order.findOne({ room_id, time });
       order.order[value].order = null;
       order.order[value].state = 2;
-      console.log('===========================================')
-      console.log(order);
-      console.log('===========================================')
       await ctx.model.Order.updateOne({ room_id, time }, order);
       return {
         status: 1,

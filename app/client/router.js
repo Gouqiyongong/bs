@@ -15,6 +15,14 @@ export default [
         path: 'order',
         component: resolve => require(['./page/order.vue'], resolve),
       },
+      {
+        path: 'manage',
+        component: resolve => require(['./page/manage.vue'], resolve),
+      },
+      {
+        path: 'personal',
+        component: resolve => require(['./page/personal.vue'], resolve),
+      },
     ]
   },
   {

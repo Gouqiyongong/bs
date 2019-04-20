@@ -32,6 +32,17 @@ class User extends Controller {
     ctx.redirect('/login')
   }
 
+  async failLogin() {
+    const { ctx } = this;
+    const username = ctx.userinfo;
+    ctx.app.redis.del(username);
+    ctx.cookies.set('token', null);
+    ctx.body = {
+      status: 1,
+      data: '退出成功'
+    }
+  }
+
   async add() {
     const { ctx } = this;
     ctx.body = await ctx.service.user.add();
