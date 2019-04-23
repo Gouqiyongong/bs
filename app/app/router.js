@@ -22,5 +22,7 @@ module.exports = app => {
   router.get('/api/order/list', controller.order.list);
   router.post('/api/order/failOrder', controller.order.failOrder);
 
+  router.get('/api/manage/roomManageList', controller.manage.roomManageList);
+
   router.get('*', controller.home.index);
 };
