@@ -29,21 +29,35 @@
             text="删除"
             :show-loading="disabledDel"></x-button>
         </div>
-        <div>
+        <div v-show="roomData.id">
           <search
             placeholder="用户名"
             :auto-fixed="false"
-            @on-submit="searchUsername"
-            @on-blur="searchUsername"
+            @on-change="searchUsernameChange"
             @on-clear="clerrSearchUsernameValue"
             v-model="searchUsernameValue"></search>
+          <div v-if="searchUserList.length" class="checkList">
+            <group>
+              <radio
+                :options="searchUserList"
+                v-model="searchUserRadioValue"></radio>
+            </group>
+          </div>
+          <div v-if="searchUserRadioValue && !searchUserList.length">没有搜索到</div>
+          <x-button
+            v-else
+            @click.native="andManage"
+            type="primary"
+            :disabled="disabledAnd"
+            text="添加"
+            :show-loading="disabledAnd"></x-button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { Search, Checklist, XButton, Radio, Group } from 'vux';
+import { Search, Checklist, XButton, Radio, Group, debounce } from 'vux';
 export default {
   components: {
     Search,
@@ -74,17 +88,76 @@ export default {
           })
       }
     },
+    searchUsernameChange: debounce(function() {
+      if(this.searchUsername === '') {
+        return;
+      }
+      this.$axios.get(`/api/manage/userList?username=${this.searchUsernameValue}`)
+        .then(data => {
+         data = data.filter(username => {
+            return !this.roomData.manager.some(a => {
+              return a === username;
+            })
+          })
+          this.searchUserList = data;
+        })
+    }, 300),
     deleteManage() {
       if(!this.checkList.length) {
         this.$vux.toast.show({
           text: '请选择添加用户',
-          text: 'text'
+          type: 'text'
         });
         return;
       }
+      this.disabledDel = true;
+      this.$axios.post('/api/manage/deleteManage', {
+        id: this.roomData.id,
+        username: this.checkList
+      }).then(data => {
+        this.$vux.toast.show({
+          text: data,
+          type: 'text'
+        });
+        this.disabledDel = false;
+        this.search();
+      })
+      .catch(err => {
+        this.$vux.toast.show({
+          text: err,
+          type: 'text'
+        });
+        this.disabledDel = false;
+      })
     },
-    searchUsername() {
-
+    andManage() {
+      if(!this.searchUserRadioValue && this.searchUserList.length) {
+        this.$vux.toast.show({
+          text: '请选择添加的用户',
+          type: 'text'
+        });
+        return;
+      }
+      this.disabledAnd = true;
+      this.$axios.post('/api/manage/addManage', {
+        id: this.roomData.id,
+        username: this.searchUserRadioValue
+      }).then(data => {
+        this.$vux.toast.show({
+          text: data,
+          type: 'text'
+        });
+        this.disabledAnd = false;
+        this.search();
+        this.searchUsernameChange();
+      })
+      .catch(err => {
+        this.$vux.toast.show({
+          text: err,
+          type: 'text'
+        });
+        this.disabledAnd = false;
+      })
     }
   },
   data() {
@@ -93,19 +166,19 @@ export default {
       radioList: ['二级管理', '教室管理'],
       searchValue: '',
       searchUsernameValue: '',
-      roomData: {
-        manager: ["admin", "admin1"],
-        id: "明理楼A101"
-      },
+      roomData: {},
       checkList: [],
-      disabledDel: false
+      searchUserList: [],
+      searchUserRadioValue: '',
+      disabledDel: false,
+      disabledAnd: false
     }
   }
 }
 </script>
 <style scoped>
   .checkList {
-    height: 4rem;
+    max-height: 3.5rem;
     overflow: auto;
   }
 </style>
