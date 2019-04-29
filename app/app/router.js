@@ -24,8 +24,11 @@ module.exports = app => {
 
   router.get('/api/manage/roomManageList', controller.manage.roomManageList);
   router.get('/api/manage/userList', controller.manage.userList);
+  router.get('/api/manage/get2ManageAbout', controller.manage.get2ManageAbout);
   router.post('/api/manage/deleteManage', controller.manage.deleteManage);
   router.post('/api/manage/addManage', controller.manage.addManage);
+  router.post('/api/manage/deleteManage2', controller.manage.deleteManage2);
+  router.post('/api/manage/addManage2', controller.manage.addManage2);
 
   router.get('*', controller.home.index);
 };
