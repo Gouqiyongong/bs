@@ -41,7 +41,7 @@
         </div>
       </div>
       <x-dialog
-        hide-on-blur="true"
+        :hide-on-blur="true"
         v-model="showDialog">
         <div class="d-content" v-if="showD">
           <checker
@@ -102,7 +102,7 @@ export default {
   methods: {
     clickRoom(value) {
       this.roomInfo = value;
-      console.log(value);
+      console.log('aaaaaaaaa',value);
       this.roomValue = '';
       this.des = '';
       this.showD = true;

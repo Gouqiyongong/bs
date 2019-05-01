@@ -121,6 +121,14 @@ class RoomService extends Service {
     const { username, power, manager } = ctx.userinfo;
 
     try {
+      const punishment = await ctx.model.Punishment.findOne({ username, end: { $gte: new Date() } });
+      if(punishment) {
+        const end = new Date(punishment.end)
+        return {
+          status: 0,
+          des: '您被禁止预订教室，惩罚时间到' + end.getFullYear() + '/' + (end.getMonth() + 1) + '/' + end.getDate()
+        }
+      }
       const order = await ctx.model.Order.findOne({
         room_id,
         time
