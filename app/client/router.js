@@ -4,6 +4,10 @@ export default [
     component: resolve => require(['./page/login.vue'], resolve)
   },
   {
+    path: '/sign',
+    component: resolve => require(['./page/sign.vue'], resolve)
+  },
+  {
     path: '/main',
     component: resolve => require(['./page/main.vue'], resolve),
     children: [

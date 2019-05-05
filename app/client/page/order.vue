@@ -15,7 +15,6 @@
         </div>
         <div class="list-b" v-if="item.state === 0">
           <button @click="failOrder(index)">取消</button>
-          <button>签到</button>
         </div>
       </li>
     </ul>

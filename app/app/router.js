@@ -18,6 +18,7 @@ module.exports = app => {
   router.get('/api/room/roomList', controller.room.roomList);
   router.get('/api/room/roomPower', controller.room.roomPower);
   router.post('/api/room/order', controller.room.order);
+  router.post('/api/room/sign', controller.room.sign);
 
   router.get('/api/order/list', controller.order.list);
   router.post('/api/order/failOrder', controller.order.failOrder);
@@ -29,6 +30,7 @@ module.exports = app => {
   router.post('/api/manage/addManage', controller.manage.addManage);
   router.post('/api/manage/deleteManage2', controller.manage.deleteManage2);
   router.post('/api/manage/addManage2', controller.manage.addManage2);
+  router.post('/api/manage/orderList', controller.manage.orderList);
 
   router.get('*', controller.home.index);
 };

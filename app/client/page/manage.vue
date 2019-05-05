@@ -5,9 +5,9 @@
       <tab-item @on-item-click="onItemClick('order')">订单信息</tab-item>
       <tab-item v-if="isShowTab" @on-item-click="onItemClick('power')">权限管理</tab-item>
     </tab>
-    <div v-show="tabType === 'chart'">a</div>
-    <div v-show="tabType === 'order'">s</div>
-    <manage-search v-show="tabType === 'power'"></manage-search>
+    <div v-if="tabType === 'chart'">a</div>
+    <manage-order v-if="tabType === 'order'"></manage-order>
+    <manage-search v-if="tabType === 'power'"></manage-search>
   </div>
 </template>
 
@@ -15,12 +15,14 @@
 import { Tab, TabItem } from 'vux'
 
 import ManageSearch from '../components/manage-search.vue';
+import ManageOrder from '../components/manage-order.vue';
 
 export default {
   components: {
     Tab,
     TabItem,
-    ManageSearch
+    ManageSearch,
+    ManageOrder
   },
   created() {
     setTimeout(() => {

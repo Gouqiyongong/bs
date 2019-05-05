@@ -119,7 +119,13 @@ class RoomService extends Service {
       return errObj
     }
     const { username, power, manager } = ctx.userinfo;
-
+    const date = new Date();
+    if(new Date(time).getTime() - new Date().getTime() < 1000 * 60 * 60 *24) {
+      return {
+        status: 0,
+        des: '必须提前一天预订'
+      }
+    }
     try {
       const punishment = await ctx.model.Punishment.findOne({ username, end: { $gte: new Date() } });
       if(punishment) {
@@ -187,7 +193,99 @@ class RoomService extends Service {
         des: err
       }
     }
-    
+  }
+
+  async sign() {
+    const { ctx } = this;
+    const { id, source } = ctx.request.body;
+    const { username } = ctx.userinfo;
+    if (source !== 'QRCode' || !id) {
+      return {
+        status: 0,
+        des: ''
+      }
+    }
+    const date = new Date();
+    const nowYear = date.getFullYear(),
+      nowMonth = date.getMonth() + 1,
+      nowDay = date.getDate(),
+      nowString = nowYear + '/' + nowMonth + '/' + nowDay;
+    const START_TIME = new Date(nowString + ' ' + '7:30').getTime(),
+      ONE_TIME = new Date(nowString + ' ' + '8:44').getTime(),
+      TWO_TIME = new Date(nowString + ' ' + '9:34').getTime(),
+      THREE_TIME = new Date(nowString + ' ' + '10:34').getTime(),
+      FORE_TIME = new Date(nowString + ' ' + '11:24').getTime(),
+      FIVE_TIME = new Date(nowString + ' ' + '12:14').getTime(),
+      SIX_TIME = new Date(nowString + ' ' + '14: 44').getTime(),
+      SEVEN_TIME = new Date(nowString + ' ' + '15:34').getTime(),
+      EIGHT_TIME = new Date(nowString + ' ' + '16:34').getTime(),
+      NINE_TIME = new Date(nowString + ' ' + '17:24').getTime(),
+      TEN_TIME = new Date(nowString + ' ' + '19:44').getTime(),
+      ELEVEN_TIME = new Date(nowString + ' ' + '20:34').getTime(),
+      TWELVE_TIME = new Date(nowString + ' ' + '21: 24').getTime(),
+      NOW_TIMW = date.getTime();
+    let index;
+    if(START_TIME <= NOW_TIMW && NOW_TIMW < ONE_TIME) index = 0;
+    else if(NOW_TIMW <= TWO_TIME) index = 1;
+    else if(NOW_TIMW <= THREE_TIME) index = 2;
+    else if(NOW_TIMW <= FORE_TIME) index = 3;
+    else if(NOW_TIMW <= FIVE_TIME) index = 4;
+    else if(NOW_TIMW <= SIX_TIME) index = 5;
+    else if(NOW_TIMW <= SEVEN_TIME) index = 6;
+    else if(NOW_TIMW <= EIGHT_TIME) index = 7;
+    else if(NOW_TIMW <= NINE_TIME) index = 8;
+    else if(NOW_TIMW <= TEN_TIME) index = 9;
+    else if(NOW_TIMW <= ELEVEN_TIME) index = 10;
+    else if(NOW_TIMW <= TWELVE_TIME) index = 11;
+    else index = -1;
+    if(index === -1) {
+      return {
+        status: 0,
+        des: '不在签到时间'
+      }
+    }
+    try {
+      const order = await ctx.model.Order.findOne({ room_id: id, time: new Date(nowString) })
+      if(order) {
+        if(order.order[index] && order.order[index].state === 1) {
+          if(order.order[index].sign && order.order[index].sign.state === 1) {
+            return {
+              status: 0,
+              des: '不能重复签到'
+            }
+          }
+          order.order[index].sign = {
+            state: 1,
+            username,
+            time: date
+          }
+          await ctx.model.Order.updateOne({ room_id: id, time: new Date(nowString) }, order);
+          return {
+            status: 1,
+            data: {
+              id,
+              username,
+              time: date
+            }
+          }
+        }
+        else {
+          return {
+            status: 0,
+            des: '尚未预订'
+          }
+        }
+      }
+    } catch(err) {
+      return {
+        status: 0,
+        des: err
+      }
+    }
+    return {
+      status: 0,
+      des: ''
+    }
   }
 }
 module.exports = RoomService;

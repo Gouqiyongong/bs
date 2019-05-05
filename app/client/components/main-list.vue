@@ -62,12 +62,14 @@
             class="room_des"
             v-model="des"
             ></textarea>
-          <x-button
-            @click.native="order()"
-            type="primary"
-            :disabled="disable"
-            text="预订"
-            :show-loading="disable"></x-button>
+          <div>
+            <x-button
+              @click.native="order()"
+              type="primary"
+              :disabled="disable"
+              text="预订" 
+              :show-loading="disable"></x-button>
+          </div>
         </div>
       </x-dialog>
   </div>

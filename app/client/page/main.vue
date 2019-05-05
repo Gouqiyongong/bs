@@ -29,19 +29,32 @@ export default {
     TabbarItem
   },
   created() {
-    this.$axios.get('/api/getUserInfo')
-      .then(data => {
-        this.$root.userInfo = data;
-        this.power = data.power;
-      })
-      .catch(() => {
-        this.$vux.toast.show({
-          text: '登录状态失效',
-          type: 'text'
-        });
-        this.$router.push('/login')
-      });
     this.selected = this.$route.path;
+    if(this.$root.userInfo) {
+      this.power = this.$root.userInfo.power;      
+      return;
+    }
+    let userInfo = localStorage.getItem('userInfo')
+    if(userInfo) {
+      userInfo = JSON.parse(userInfo);
+      this.$root.userInfo = userInfo;
+      this.power = userInfo.power;
+    }
+    else {
+      this.$axios.get('/api/getUserInfo')
+        .then(data => {
+          this.$root.userInfo = data;
+          localStorage.setItem('userInfo', JSON.stringify(data));
+          this.power = data.power;
+        })
+        .catch(() => {
+          this.$vux.toast.show({
+            text: '登录状态失效',
+            type: 'text'
+          });
+          this.$router.push('/login')
+        });
+    }
   },
   data() {
     return {

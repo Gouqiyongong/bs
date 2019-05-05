@@ -180,6 +180,62 @@ class OrderService extends Service {
       }
     }
   }
+
+  async orderList() {
+    const { ctx } = this;
+    const { power } = ctx.userinfo;
+    if(power !== '0' && power !== '1') {
+      return {
+        status: 0,
+        des: '权限不足'
+      }
+    }
+    const { place, floor, clas } = ctx.request.body;
+    if(!place || !floor || !clas) {
+      return {
+        status: 0,
+        des: '参数错误'
+      }
+    }
+    try {
+      const room = await ctx.model.Room.find({ place, floor });
+      let data = [];
+      const date = new Date(),
+        dateString = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+      for(let i = 0; i < room.length; i++) {
+        let order = await ctx.model.Order.findOne({ room_id: room[i].id, time: new Date(dateString) });
+        if(order && order.order && clas === 'all') {
+          order.order.forEach(item => {
+            if(item.state === 1) {
+              data.push({
+                room: room[i].id,
+                size: room[i].size,
+                ...item.order
+              })
+            }
+          })
+        } else {
+          if(order.order[clas - 1] && order.order[clas - 1].state === 1) {
+            data.push({
+              room: room[i].id,
+              size: room[i].size,
+              ...order.order[clas - 1].order
+            })
+          }
+        }
+      }
+      data.sort((a, b) => a.room < b.room)
+      return {
+        status: 1,
+        data
+      }
+    } catch(err) {
+      return {
+        status: 0,
+        des: err
+      }
+    }
+  }
 }
 
 module.exports = OrderService;

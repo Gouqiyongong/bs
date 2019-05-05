@@ -50,6 +50,12 @@ class ManageController extends Controller {
     const data = await ctx.service.manage.deleteAndAndManage2('and');
     ctx.body = data;
   }
+
+  async orderList() {
+    const { ctx } = this;
+    const data = await ctx.service.manage.orderList();
+    ctx.body = data;
+  }
 }
 
 module.exports = ManageController;

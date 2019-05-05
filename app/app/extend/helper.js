@@ -24,7 +24,7 @@ module.exports = {
   },
   punishment: async function (ctx, type) {
     const nowDate = new Date();
-    const nowYear = nowDate.getFullYear(),
+    const nowYear = nowDate.getFullYear(), 
           nowMonth = nowDate.getMonth() + 1,
           nowDay = nowDate.getDate();
     const nowYMDString = nowYear + '/' + nowMonth + '/' + nowDay;

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { Flexbox, FlexboxItem, XButton, XInput } from 'vux';
+import { Flexbox, FlexboxItem, XButton, XInput, querystring } from 'vux';
 export default {
   components: {
     Flexbox,
@@ -53,7 +53,16 @@ export default {
             text: '登陆成功',
             type: 'text'
           })
-          this.$router.push('/main')
+          this.$axios.get('/api/getUserInfo')
+            .then(data => {
+              localStorage.setItem('userInfo', JSON.stringify(data));
+              this.$root.userInfo = data;
+            })
+            const search = querystring.parse(location.search)
+            if(search && search.location) {
+              this.$router.push(`/${search.location}`);
+              }
+              this.$router.push('/main')
         })
         .catch(err => {
           this.$vux.toast.show({
