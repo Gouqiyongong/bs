@@ -31,6 +31,7 @@ module.exports = app => {
   router.post('/api/manage/deleteManage2', controller.manage.deleteManage2);
   router.post('/api/manage/addManage2', controller.manage.addManage2);
   router.post('/api/manage/orderList', controller.manage.orderList);
-
+  router.get('/api/manage/chart', controller.manage.chart);
+  
   router.get('*', controller.home.index);
 };

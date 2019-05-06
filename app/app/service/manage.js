@@ -236,6 +236,54 @@ class OrderService extends Service {
       }
     }
   }
+
+  async chart() {
+    const { ctx } = this;
+    const { power } = ctx.userinfo;
+    if(power !== '0' && power !== '1') {
+      return {
+        status: 0,
+        des: '权限不足'
+      }
+    }
+
+    const { start, end } = ctx.query;
+    if(!start || !end) {
+      return {
+        status: 0,
+        des: '参数错误'
+      }
+    }
+
+    try {
+      const data = {};
+      const order = await ctx.model.Order.find({ time: { $gte: new Date(start), $lt: new Date(end) } })
+      let line_1 = new Array(12).fill(0);
+      order.forEach(item => {
+        item.order && item.order.forEach((or, index) => {
+          if(or.state === 1) {
+            line_1[index] ? line_1[index]++ : line_1[index] = 1;
+          }
+        })
+      })
+      line_1 = line_1.map((item, index) => {
+        return {
+          year: (index + 1) + '节',
+          sales: item
+        }
+      })
+      data.chart1 = line_1;
+      return {
+        status: 1,
+        data
+      }
+    } catch(err) {
+      return {
+        status: 1,
+        des: 'err'
+      }
+    }
+  }
 }
 
 module.exports = OrderService;

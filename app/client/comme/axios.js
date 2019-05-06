@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { querystring } from 'vux'
+import querystring from 'querystring'
 
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL ='';
@@ -7,7 +7,7 @@ axios.defaults.baseURL ='';
 
 //http request 拦截器
 axios.interceptors.request.use(
-  config => {
+  function(config) {
     // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
     config.data = querystring.stringify(config.data);
     config.headers = {
@@ -18,8 +18,8 @@ axios.interceptors.request.use(
     // }
     return config;
   },
-  error => {
-    return Promise.reject(err);
+  function(error) {
+    return Promise.reject(error);
   }
 );
 

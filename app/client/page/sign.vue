@@ -17,8 +17,8 @@
   </div>
 </template>
 <script>
-import { XButton, querystring, Alert, dateFormat } from 'vux';
-import { WSAETOOMANYREFS } from 'constants';
+import { XButton, Alert, dateFormat } from 'vux';
+import querystring from 'querystring';
 export default {
   components: {
     XButton,

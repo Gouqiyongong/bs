@@ -1,5 +1,5 @@
 <template>
-  <div class="fix content">
+  <div class="content">
     <flexbox
       orient="vertical"
       :gutter="20"
@@ -31,7 +31,8 @@
 </template>
 
 <script>
-import { Flexbox, FlexboxItem, XButton, XInput, querystring } from 'vux';
+import { Flexbox, FlexboxItem, XButton, XInput } from 'vux';
+import querystring from 'querystring';
 export default {
   components: {
     Flexbox,
@@ -90,6 +91,11 @@ export default {
 
 <style scoped>
   .content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding-top: 50%;
     background-color: #f8f8f8;
   }

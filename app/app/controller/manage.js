@@ -56,6 +56,12 @@ class ManageController extends Controller {
     const data = await ctx.service.manage.orderList();
     ctx.body = data;
   }
+
+  async chart() {
+    const { ctx } = this;
+    const data = await ctx.service.manage.chart();
+    ctx.body = data;
+  }
 }
 
 module.exports = ManageController;

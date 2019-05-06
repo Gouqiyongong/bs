@@ -75,7 +75,8 @@
   </div>
 </template>
 <script>
-import { PopupPicker, Group, XDialog, Datetime, Checker, CheckerItem, XButton, dateFormat, querystring } from "vux";
+import { PopupPicker, Group, XDialog, Datetime, Checker, CheckerItem, XButton, dateFormat } from "vux";
+import querystring from 'querystring';
 
 export default {
   components: {
@@ -104,7 +105,6 @@ export default {
   methods: {
     clickRoom(value) {
       this.roomInfo = value;
-      console.log('aaaaaaaaa',value);
       this.roomValue = '';
       this.des = '';
       this.showD = true;
@@ -119,6 +119,7 @@ export default {
         floor: this.floor[1].slice(0, -1),
         time: this.time.replace('-', '/')
       };
+      console.log(query)
       this.$axios.get(`/api/room/roomList?${querystring.stringify(query)}`)
         .then(data => {
           this.$set(this, 'roomList', data);
