@@ -21,6 +21,8 @@ module.exports = app => {
         order: {
           username: String,
           time: Date,
+          usedevice: Boolean,
+          people: Number,
           des: String
         },
         // 签到

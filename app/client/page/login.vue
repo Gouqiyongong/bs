@@ -72,6 +72,12 @@ export default {
           })
         })
       }
+      else {
+        this.$vux.toast.show({
+            text: '用户名和密码不能为空',
+            type: 'text'
+          })
+      }
     },
     clear(type) {
       console.log(type)

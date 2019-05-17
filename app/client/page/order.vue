@@ -11,7 +11,7 @@
           <p v-if="item.state === 0" class="list-min">状态: 已预订</p>
           <p v-if="item.state === 1" class="list-min">状态: 已签到</p>
           <p v-if="item.state === 2" class="list-min">状态: 已过期</p>
-          <p v-if="item.state === 3" class="list-min">状态: 被占用</p>
+          <p v-if="item.state === 3" class="list-min">状态: 被取消</p>
         </div>
         <div class="list-b" v-if="item.state === 0">
           <button @click="failOrder(index)">取消</button>

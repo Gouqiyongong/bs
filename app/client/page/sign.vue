@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     sign() {
-      const { source, id } = querystring.parse(location.search);
+      const { source, id } = querystring.parse(location.search.slice(1));
       this.disabled = true;
       this.$axios.post('/api/room/sign', {
         id,

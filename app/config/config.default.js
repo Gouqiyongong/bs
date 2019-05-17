@@ -16,7 +16,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1553691195402_9051';
 
   // add your middleware config here
-  config.middleware = ['loginjwt'];
+  config.middleware = ['compress', 'loginjwt'];
 
 
   // add your user config here
@@ -53,7 +53,10 @@ module.exports = appInfo => {
     },
     jwt: {
       secret: "123456"
-    }
+    },
+    compress: {
+      threshold:2048,
+    }      
   };
 
   return {

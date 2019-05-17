@@ -19,6 +19,7 @@ module.exports = app => {
   router.get('/api/room/roomPower', controller.room.roomPower);
   router.post('/api/room/order', controller.room.order);
   router.post('/api/room/sign', controller.room.sign);
+  router.get('/api/room/recommend', controller.room.recommend);
 
   router.get('/api/order/list', controller.order.list);
   router.post('/api/order/failOrder', controller.order.failOrder);

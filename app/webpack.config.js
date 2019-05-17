@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const vuxLoader = require('vux-loader');
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const webpackConfig = {
   entry: {
@@ -73,6 +74,17 @@ const webpackConfig = {
     new HtmlWebpackPlugin({
       filename: path.join(__dirname, './app/view/dist/index.tpl'),
       template: path.join(__dirname, './app/view/index.tpl'),
+      minify:{ //压缩HTML文件
+        removeComments:true,    //移除HTML中的注释
+        collapseWhitespace:true    //删除空白符与换行符
+      }
+    }),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.(js|html)$/,
+      threshold: 10240,
+      minRatio: 0.8
     }),
     /**
      * 把js文件打包成3种类型：

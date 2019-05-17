@@ -31,7 +31,7 @@
             :key="key">
             <div
               @click="val && val.data && clickRoom(val)"
-              :style="{backgroundColor: val ? 'blue' : ''}"
+              :style="{backgroundColor: val ? '#f96' : ''}"
               class="list-r"
               v-for="(val, k) in value"
               :key="k">
@@ -58,8 +58,27 @@
               {{index + 1}}
             </checker-item>
           </checker>
+          <group :style="{'margin-top': '-.4rem'}">
+            <x-input
+              :show-clear="false"
+              type="number"
+              :max="2"
+              required
+              title="使用人数"
+              v-model="people"></x-input>
+          </group>
+          <div class="radio">
+            <label>设备选项</label>
+            <div>
+              <input type="radio" name="device" id="device1" value="true" v-model="usedevice">
+              <label for="device1">使用</label>
+              <input type="radio" name="device" id="device2" value="false" v-model="usedevice">
+              <label for="device2">不使用</label>
+            </div>
+          </div>
           <textarea
             class="room_des"
+            placeholder="请填写使用理由"
             v-model="des"
             ></textarea>
           <div>
@@ -72,10 +91,28 @@
           </div>
         </div>
       </x-dialog>
+      <x-dialog
+        :hide-on-blur="true"
+        v-model="showRecommendDialog">
+        <div class="d-contentRecommend">
+          <h4>推荐教室</h4>
+          <p>教室：{{recommend.id}}</p>
+          <p>大小：{{recommend.size}}</p>
+          <p>时间：{{recommend.time}}</p>
+          <x-button
+            type="primary"
+            text="预订"
+            @click.native="useRecommend()"></x-button>
+          <x-button
+            type="primary"
+            text="再看看"
+            @click.native="useRecommendClose()"></x-button>
+        </div>
+      </x-dialog>
   </div>
 </template>
 <script>
-import { PopupPicker, Group, XDialog, Datetime, Checker, CheckerItem, XButton, dateFormat } from "vux";
+import { PopupPicker, Group, XDialog, Datetime, Checker, CheckerItem, XButton, XInput, dateFormat } from "vux";
 import querystring from 'querystring';
 
 export default {
@@ -86,10 +123,18 @@ export default {
     XDialog,
     Checker,
     CheckerItem,
-    XButton
+    XButton,
+    XInput
   },
   async created() {
     this.time = dateFormat(new Date(), "YYYY-MM-DD");
+    
+    this.$axios.get('/api/room/recommend')
+      .then(data => {
+        data.time = dateFormat(new Date(data.time), "YYYY-MM-DD")
+        this.recommend = data;
+        this.showRecommendDialog = true;
+      })
 
     try {
       let floorList = await this.$axios.get('/api/room/category')
@@ -149,14 +194,16 @@ export default {
           .then(() => {
             result = true;
           })
+          .catch(() => {
+            return result;
+          })
       }
-      return result;
     },
     order() {
-      const { roomValue, des } = this;
+      const { roomValue, des, people, usedevice } = this;
       if(!roomValue) {
         this.$vux.toast.show({
-          text: '选择预订时间',
+          text: '选择预订课时',
           type: 'warn'
         })
         return;
@@ -168,7 +215,22 @@ export default {
         })
         return;
       }
-      const state = this.roomInfo.data || this.roomInfo.data.order[this.roomValue].state;
+      if(!people) {
+        this.$vux.toast.show({
+          text: '输入使用人数',
+          type: 'warn'
+        })
+        return;
+      }
+
+      if(parseInt(people) >= 100) {
+        this.$vux.toast.show({
+          text: '使用人数不能超过一百人',
+          type: 'warn'
+        })
+        return;
+      }
+      const state = this.roomInfo.data && this.roomInfo.data.order[this.roomValue].state;
       const { power } = this.$root.userInfo;
       const success = () => {
         this.disable = true;
@@ -176,7 +238,9 @@ export default {
           room_id: this.roomInfo.data.room_id,
           time: this.roomInfo.data.time,
           value: this.roomValue,
-          des: this.des
+          des,
+          people,
+          usedevice
         })
         .then(() => {
           this.$vux.toast.show({
@@ -209,18 +273,34 @@ export default {
         return;
       }
       success();
+    },
+    useRecommend() {
+      this.roomInfo = {
+        size: this.recommend.size,
+        data: this.recommend.order
+      };
+      this.roomValue = '';
+      this.des = '';
+      this.showRecommendDialog = false;
+      this.showD = true;
+      this.showDialog = true;
+    },
+    useRecommendClose() {
+      this.showRecommendDialog = false;
     }
-  },
-  computed: {
   },
   data() {
     return {
+      people: '',
+      usedevice: false,
       roomValue: '',
       des: '',
       roomInfo: {},
       showD: false,
       showDialog: false,
       disable: false,
+      showRecommendDialog: false,
+      recommend: {},
       floor: ["明理楼", "1楼"],
       time: "",
       roomList: [],
@@ -297,7 +377,8 @@ export default {
   margin-top: 0.8rem;
   width: 100%;
   height: 8rem;
-  background-color: red;
+  color: #fff;
+  background-color: #eee;
 }
 .list-all {
   white-space: nowrap;
@@ -307,10 +388,12 @@ export default {
   margin: 0.2em;
   width: 1em;
   height: 1em;
+  height: 1em;
   text-align: center;
   line-height: 80%;
+  border: 5px outset #ccc;
   vertical-align: middle;
-  background-color: green;
+  background-color: #fff;
 }
 
 .list-r>span {
@@ -320,7 +403,19 @@ export default {
 .d-content {
   width: 100%;
   height: 10rem;
+  overflow: auto;
   background-color: #fff;
+}
+
+.d-contentRecommend {
+  padding: 1rem .5rem;
+  font-size: 16px;
+  background-color: #fff;
+}
+
+.d-contentRecommend>p {
+  text-align: left;
+  margin: .2rem 0;
 }
 
 .room_des {
@@ -329,7 +424,21 @@ export default {
   margin: .3rem auto 0 auto;
 }
 
+.radio {
+  padding: 10px 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+}
+
+.radio>label {
+  width: 5em;
+  text-align: center;
+}
+
 .checker-default {
+  margin: .1rem .05rem;
   padding: .1rem .3rem;
   border: 1px solid #ececec
 }

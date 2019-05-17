@@ -168,7 +168,14 @@ export default {
       })
     },
     andManage() {
-      if(!this.searchUserRadioValue && this.searchUserList.length) {
+      if(!this.searchUserList.length) {
+        this.$vux.toast.show({
+          text: '请搜索用户',
+          type: 'text'
+        });
+        return;
+      }
+      if(!this.searchUserRadioValue) {
         this.$vux.toast.show({
           text: '请选择添加的用户',
           type: 'text'

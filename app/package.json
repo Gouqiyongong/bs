@@ -14,10 +14,14 @@
     "egg-scripts": "^2.11.0",
     "egg-sequelize": "^4.3.1",
     "egg-view-nunjucks": "^2.2.0",
+    "koa-compress": "^3.0.0",
+    "koa-is-json": "^1.0.0",
     "mysql2": "^1.6.5",
     "querystring": "^0.2.0",
+    "uglifyjs-webpack-plugin": "^2.1.2",
     "vux": "^2.9.3",
-    "vux-loader": "^1.2.9"
+    "vux-loader": "^1.2.9",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "autod": "^3.0.1",
@@ -28,6 +32,7 @@
     "babel-loader": "~6.4.1",
     "babel-preset-latest": "~6.24.1",
     "babel-preset-stage-1": "~6.24.1",
+    "compression-webpack-plugin": "1.1.11",
     "css-loader": "~0.28.0",
     "egg-bin": "^4.11.0",
     "egg-ci": "^1.11.0",
@@ -68,7 +73,8 @@
     "lint": "eslint .",
     "ci": "npm run lint && npm run cov",
     "autod": "autod",
-    "build": "webpack --watch"
+    "build": "webpack --watch",
+    "buildp": "webpack --watch --p"
   },
   "ci": {
     "version": "8"

@@ -93,5 +93,26 @@ module.exports = {
       console.log('this is a punishment schedule error--------------------')
 
     }
+  },
+  getMax(arr) {
+    let floorObj = {},
+        sizeObj = {},
+        placeObj = {},
+        areaObj = {};
+    arr.forEach(item => {
+      floorObj[item.floor] = floorObj[item.floor] ? floorObj[item.floor] + 1 : 1;
+      sizeObj[item.size] = sizeObj[item.size] ? sizeObj[item.size] + 1 : 1;
+      placeObj[item.place] = placeObj[item.place] ? placeObj[item.place] + 1 : 1;
+      areaObj[item.area] = areaObj[item.area] ? areaObj[item.area] + 1 : 1;
+    });
+    
+    let max = obj => Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b);
+
+    return {
+      floor: max(floorObj),
+      size: max(sizeObj),
+      place: max(placeObj),
+      area: max(areaObj)
+    }
   }
 }

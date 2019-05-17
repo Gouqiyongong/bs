@@ -110,17 +110,18 @@ class RoomService extends Service {
   }
   async order() {
     const { ctx } = this;
-    const { room_id, time, des, value } = ctx.request.body;
+    const { room_id, time, des, value, people, usedevice } = ctx.request.body;
     const errObj = {
       status: 1,
       des: '请求参数错误'
     }
-    if(!room_id || !time || !des || !value) {
+    if(!room_id || !time || !des || !value || !people || usedevice === undefined) {
       return errObj
     }
     const { username, power, manager } = ctx.userinfo;
     const date = new Date();
-    if(new Date(time).getTime() - new Date().getTime() < 1000 * 60 * 60 *24) {
+    const nowString = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+    if(new Date(time).getTime() - new Date(nowString).getTime() < 1000 * 60 * 60 *24) {
       return {
         status: 0,
         des: '必须提前一天预订'
@@ -171,11 +172,19 @@ class RoomService extends Service {
           oneOrder.oldOrder = oneOrder.oldOrder ? oneOrder.oldOrder.push(oneOrder.order.username) : [].push(oneOrder.order.username);
         }
       }
+      if(oneOrder && oneOrder.order && oneOrder.order.username === username) {
+        return {
+          status: 0,
+          des: '不能重复预订'
+        }
+      }
       oneOrder.state = 1;
       oneOrder.order = {
         username,
         time: new Date(),
-        des
+        des,
+        people,
+        usedevice
       }
       await ctx.model.Order.updateOne(
         {
@@ -194,7 +203,6 @@ class RoomService extends Service {
       }
     }
   }
-
   async sign() {
     const { ctx } = this;
     const { id, source } = ctx.request.body;
@@ -202,7 +210,7 @@ class RoomService extends Service {
     if (source !== 'QRCode' || !id) {
       return {
         status: 0,
-        des: ''
+        des: '参数错误'
       }
     }
     const date = new Date();
@@ -279,12 +287,63 @@ class RoomService extends Service {
     } catch(err) {
       return {
         status: 0,
-        des: err
+        des: 'err'
       }
     }
-    return {
+  }
+
+  async recommend() {
+    const { ctx } = this;
+    const { username } = ctx.userinfo;
+    const errObj = {
       status: 0,
       des: ''
+    }
+    try {
+      let order = await ctx.model.Order.find({
+        order: { $elemMatch:{ 'order.username': username } }
+      });
+      if(!order || !order.length) {
+        
+        return errObj;
+      }
+      let roomList = [];
+      for(let i = 0; i < order.length; i++) {
+        let room = await ctx.model.Room.findOne({ id: order[i].room_id });
+        roomList.push(room);
+      }
+      let maxObj = ctx.helper.getMax(roomList);
+      maxObj.floor = maxObj.floor === 1 ? 2 : maxObj.floor;
+      maxObj.floor = maxObj.floor === 5 ? 4 : maxObj.floor;
+      const recommendRoom = await ctx.model.Room.findOne({
+        area: maxObj.area,
+        floor: { $gte: maxObj.floor - 1, $lte: maxObj.floor + 1 },
+        place: maxObj.place,
+        size: { $gte: maxObj.size - 10, $lte: maxObj.size + 10 }
+      });
+      if(!recommendRoom) {
+        return errObj;
+      }
+      const date = new Date();
+      const lastDate = new Date(new Date(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()).getTime() + 1000 * 60 * 60 * 24);
+      const recommendOrder = await ctx.model.Order.findOne({ room_id: recommendRoom.id, time: lastDate })
+      if(!recommendOrder) {
+        return errObj;
+      }
+      return {
+        status: 1,
+        data: {
+          size: recommendRoom.size,
+          id: recommendRoom.id,
+          time: lastDate,
+          order: recommendOrder
+        }
+      };
+    } catch (err) {
+      return {
+        status: 0,
+        des: err
+      }
     }
   }
 }
