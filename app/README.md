@@ -5,7 +5,7 @@ gqy bs
 ## QuickStart
 
 <!-- add docs here for user -->
-
+项目依赖Node平台，以及MongoDB和Redis数据库，请提前搭建环境
 see [egg docs][egg] for more detail.
 
 ### Development
@@ -13,6 +13,8 @@ see [egg docs][egg] for more detail.
 ```bash
 $ npm i
 $ npm run dev
+// 如果此步骤失败，请增加：npm i egg-view-nunjucks egg-redis --dev
+$ npm run build
 $ open http://localhost:7001/
 ```
 
