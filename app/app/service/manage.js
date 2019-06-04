@@ -199,6 +199,12 @@ class OrderService extends Service {
     }
     try {
       const room = await ctx.model.Room.find({ place, floor });
+      if(!room.length) {
+        return {
+          status: 0,
+          des: '参数错误'
+        }
+      }
       let data = [];
       const date = new Date(),
         dateString = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
@@ -214,7 +220,7 @@ class OrderService extends Service {
               })
             }
           })
-        } else {
+        } else if(order) {
           if(order.order[clas - 1] && order.order[clas - 1].state === 1) {
             data.push({
               room: room[i].id,
@@ -222,6 +228,12 @@ class OrderService extends Service {
               ...order.order[clas - 1].order
             })
           }
+        }
+      }
+      if(!data.length) {
+        return {
+          status: 0,
+          des: '没有订单'
         }
       }
       data.sort((a, b) => a.room < b.room)

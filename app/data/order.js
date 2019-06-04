@@ -6,7 +6,7 @@ function order() {
     for(let i = 1; i <= 31; i++) {
       let a = {};
       a.room_id = item.place + item.roomnumber;
-      a.time = new Date(`2019/5/${i}`);
+      a.time = new Date(`2019/6/${i}`);
       a.order = new Array(12);
       for(let j = 0; j < 12; j++) {
         a.order[j] = {

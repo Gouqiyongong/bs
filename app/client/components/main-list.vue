@@ -18,7 +18,7 @@
             title="时间"
             v-model="time"
             placeholder="请选择"
-            start-date="2019-04-15"
+            :start-date="startTime"
             @on-change="timeChage"
           ></datetime>
         </group>
@@ -127,7 +127,7 @@ export default {
     XInput
   },
   async created() {
-    this.time = dateFormat(new Date(), "YYYY-MM-DD");
+    this.time = dateFormat(new Date(new Date().getTime() + 1000 * 60 * 60 * 24), "YYYY-MM-DD");
     
     this.$axios.get('/api/room/recommend')
       .then(data => {
@@ -185,17 +185,16 @@ export default {
       if(power == 3 && state === 1) {
         return true;
       }
-      let result = false;
       if(power == 2 && state == 1) {
         const query = {
           room_id: this.roomInfo.data.room_id
         }
-        this.$axios.get(`/api/room/roomPower?${querystring.stringify(query)}`)
+        return this.$axios.get(`/api/room/roomPower?${querystring.stringify(query)}`)
           .then(() => {
-            result = true;
+            return true;
           })
           .catch(() => {
-            return result;
+            return false;
           })
       }
     },
@@ -303,6 +302,7 @@ export default {
       recommend: {},
       floor: ["明理楼", "1楼"],
       time: "",
+      startTime: "",
       roomList: [],
       floorList: [
         {

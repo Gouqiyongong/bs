@@ -5,7 +5,7 @@
       <tab-item @on-item-click="onItemClick('order')">订单信息</tab-item>
       <tab-item v-if="isShowTab" @on-item-click="onItemClick('power')">权限管理</tab-item>
     </tab>
-    <manage-chart v-if="tabType === 'chart'"></manage-chart>
+    <manage-chart v-show="tabType === 'chart'"></manage-chart>
     <manage-order v-if="tabType === 'order'"></manage-order>
     <manage-search v-if="tabType === 'power'"></manage-search>
   </div>

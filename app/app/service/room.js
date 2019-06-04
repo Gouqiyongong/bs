@@ -304,7 +304,18 @@ class RoomService extends Service {
         order: { $elemMatch:{ 'order.username': username } }
       });
       if(!order || !order.length) {
+        return errObj;
+      }
+      let hasO = 0;
+      order.forEach(item => {
+        item.order && item.order.forEach(a => {
+          if(a.order && a.order.username === username) {
+            hasO++;
+          }
+        })
         
+      })
+      if(hasO < 5) {
         return errObj;
       }
       let roomList = [];
